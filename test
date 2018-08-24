@@ -1,0 +1,14 @@
+"AB" y "B" = x x
+"A" y "B" = z
+#"BA" z "B" = a "B"
+
+#a b = x
+#b = "lo"
+#x = "testhello"
+
+(x==2*y)
+(z==y+2)
+#(x = 9)
+
+[b = L(A*)]
+

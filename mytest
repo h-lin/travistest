@@ -1,0 +1,75 @@
+#!/usr/bin/env python3
+
+import sys
+#from os.path import dirname
+#anchor_dir = dirname(dirname(__file__))
+#sys.path.append(anchor_dir)
+#sys.path.append(f"{anchor_dir}/python")
+#sys.path.append('../')
+#sys.path.append('../python')
+#sys.path.append('/home/h-lin/git-repo/qses/src/main/scripts')
+#sys.path.append('/home/h-lin/git-repo/qses/src/main/python')
+from we import *
+from prob import *
+from solver import *
+from parsing.simple import *
+
+#from antlr4 import FileStream, CommonTokenStream, ParseTreeWalker
+#from generated.SMTLIB26Lexer import SMTLIB26Lexer
+#from generated.SMTLIB26Parser import SMTLIB26Parser
+#from generated.SMTLIB26ParserListener import SMTLIB26ParserListener
+
+#class MySMTLIB26Printer(SMTLIB26ParserListener):
+#    def enterIdentifier(self, ctx):
+#        print(ctx.symbol().SIMPLE_SYMBOL())
+
+def main(argv):
+  #print(sys.path)
+  assert(len(argv)>=2)
+  filename = argv[1]
+  reader = ReadProb()
+  reader.read_input_file(filename)
+  print(f'word equations read from \"{filename}\":')
+  for we in reader.word_equations:
+    print(we)
+    #print(f'we: {[str(e) for e in we[0]]} = {[str(e) for e in we[1]]}')
+  for lc in reader.length_constraints:
+    print('lc:'+lc)
+  for mc in reader.membership_constraints:
+    print('mc:'+mc)
+
+  problem = Problem()
+  #tmpE = Variable('a')
+  #problem.declare_variable(tmpE.value,VariableType.string)
+  #print(problem.variables)
+  for we in reader.word_equations:
+    safely_add_word_equation_to_problem(we,problem)
+    #wetmp = WordEquation(we[0],we[1])
+    #for v in wetmp.variables():
+    #  if v.value not in problem.variables:
+    #    problem.declare_variable(v.value,VariableType.string)
+    #print(problem.variables)
+    #problem.add_word_equation(wetmp)
+  #print(problem.word_equations)
+
+  solver = BasicSolver(problem)
+  print(solver.pending_checks)
+  solver.solve()
+  #print_tree_plain(solver.resolve)
+  print_tree_pretty(solver.resolve)
+  print_tree_dot_pretty(solver.resolve)
+
+  weTmp = WordEquation([ Variable('y'), Character('B') ], [])
+  print(f'Is {weTmp} simply unsolvable?  {weTmp.is_simply_unsolvable()}')
+  print(f'Is {weTmp} has emptiness?      {weTmp.has_emptiness()}')
+  probTmp = Problem()
+  safely_add_word_equation_to_problem(weTmp,probTmp)
+  solvTmp = BasicSolver(probTmp)
+  solvTmp.solve()
+  print_tree_pretty(solvTmp.resolve)
+  print(weTmp==solvTmp.resolve.success_end)
+  #solvtmp.transform_with_emptiness(weTmp)
+  print_tree_c_program(solver.resolve,'UAutomizerC',reader.length_constraints)
+#
+if __name__ == '__main__':
+  main(sys.argv)
