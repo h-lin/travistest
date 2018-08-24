@@ -1,0 +1,25 @@
+#!/usr/bin/env python3
+
+import sys
+import unittest
+from we import *
+from prob import *
+from solver import *
+from parsing.simple import *
+
+class Test_we_element(unittest.TestCase):
+    def test_char_repr(self):
+        self.assertEqual(str(Character('a')),'C(a)')
+
+    def test_var_repr(self):
+        self.assertEqual(str(Variable('var')),'V(var)')
+
+    def test_char_eq(self):
+        self.assertTrue(Character('a')==Character('a'))
+
+    def test_var_eq(self):
+        self.assertTrue(Variable('a')==Variable('a'))
+
+#
+if __name__ == '__main__':
+    unittest.main()
