@@ -20,6 +20,9 @@ class Test_we_element(unittest.TestCase):
     def test_var_eq(self):
         self.assertTrue(Variable('a')==Variable('a'))
 
+class Test_global_functions(unittest.TestCase):
+    def test_is_var(self):
+        self.assertTrue(is_var(Variable('var')))
 #
 if __name__ == '__main__':
     unittest.main()
